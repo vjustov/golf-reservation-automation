@@ -1,0 +1,16 @@
+{
+  "name": "watir_test",
+  "version": "1.0.0",
+  "main": "Playwright.spec.js",
+  "scripts": {
+    "start": "playwright"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.18"
+  }
+}
