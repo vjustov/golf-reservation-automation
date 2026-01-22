@@ -2,39 +2,66 @@ import 'dotenv/config'
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  // await page.goto('https://countryclub.do/');
-    // await page.getByText('RESERVAS ONLINE').nth(1).hover();
-  // await page.getByRole('link', { name: 'RESERVAS DEPORTIVAS Y EVENTOS' }).click();
-  
+  try {
 
-  await page.goto('https://countryclub.golfmanager.com/system/page/landing');
-  await page.getByRole('link', { name: 'Reservar' }).click();
-  
-  const userField = await page.getByRole('textbox', { name: 'Usuario o email' });
-  await userField.fill(process.env.COUNTRY_CLUB_USERNAME)
-  const passwordField = await page.getByRole('textbox', { name: 'Contraseña' });
-  await passwordField.fill(process.env.COUNTRY_CLUB_PASSWORD)
-  await page.locator('div').filter({ hasText: /^Entrar$/ }).nth(2).click();
-  await page.getByText('Golf').click();
-  await page.locator('.textIconInput > .icon').click();
-  const dayOfTheMonth = (new Date()).getDate() + 1;
-  await page.getByText(dayOfTheMonth.toString(), { exact: true }).click();
+    await page.goto('https://countryclub.golfmanager.com/system/page/landing');
+    await page.getByRole('link', { name: 'Reservar' }).click();
 
-  const timeSlotWishlist = "7:40";
-  await page.getByText(timeSlotWishlist).click();
-  const child = page.getByText("GF 18H SOCIOS");
-  await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
+    const userField = await page.getByRole('textbox', { name: 'Usuario o email' });
+    await userField.fill(process.env.COUNTRY_CLUB_USERNAME)
+    const passwordField = await page.getByRole('textbox', { name: 'Contraseña' });
+    await passwordField.fill(process.env.COUNTRY_CLUB_PASSWORD)
+    await page.locator('div').filter({ hasText: /^Entrar$/ }).nth(2).click();
+    await page.getByText('Golf').click();
+    await page.locator('.textIconInput > .icon').click();
+    const dayOfTheMonth = (new Date()).getDate() + 1;
+    await page.getByText(dayOfTheMonth.toString(), { exact: true }).click();
 
-  const memberIds = [6944,7818,6563];
+    const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:00)/ }).first()
+    const hourValue = hourLocator.innerText();
+    hourLocator.click()
+    const child = page.getByText("GF 18H SOCIOS");
+    await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
-  const memberFields = page.getByRole('textbox', { name: 'Identificador' });
-  const count = await memberFields.count();
-  for (let i = 0; i < count; ++i)
-    await memberFields.nth(i).fill(memberIds[i].toString());
-
-  await page.getByText("Confirmar").click();
+    // const memberIds = [6944, 7818, 6563]; // 9:07
+    // const memberIds = [6645,6343,1668]; // 9:29
+    // const memberIds = [4311,7377,4818]; // 9:34
+    const memberIds = [5162, 3176, 3537];
 
 
 
-  await page.waitForTimeout(300000)
+    const memberFields = page.getByRole('textbox', { name: 'Identificador' });
+    const count = await memberFields.count();
+    for (let i = 0; i < count; ++i)
+      await memberFields.nth(i).fill(memberIds[i].toString());
+
+    await page.getByText("Confirmar").click();
+
+    if (await page.locator(".confirmReservation > .errorPanel").innerText()) {
+      // do something
+    }
+
+    await page.getByRole('checkbox').click();
+    await page.getByText('Pagar', { exact: true }).click()
+
+
+    await page.locator('#tokenizedCards').click();
+    await page.getByText('**** 0263').click();
+    await page.getByText('Pagar', { exact: true }).nth(1).dispatchEvent('click');
+
+    await page.getByRole('textbox', { name: 'Nombre en la tarjeta' }).fill("Victor M Justo K");
+    await page.getByRole('textbox', { name: 'Correo electrónico' }).fill("v.justo@claro.net.do");
+
+    await page.pause()
+  } catch (e) {
+    console.log(e)
+    await page.pause()
+    // Do something if this is a timeout.
+  }
+
 });
+
+
+function selectHour() {
+
+}
