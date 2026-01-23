@@ -23,10 +23,10 @@ test('test', async ({ page }) => {
     // await page.pause();
     await page.getByText(dayOfTheMonth.toString(), { exact: true }).click();
 
-    const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:00)/ }).first()
+    const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:40)/ }).first()
     const hourValue = hourLocator.innerText();
     hourLocator.click()
-    const child = page.getByText("GF 18H SOCIOS");
+    const child = page.getByText("GF 18H");
     await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
     const memberIds = [6645, 7818, 6563];
