@@ -2,31 +2,31 @@ import 'dotenv/config'
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  test.setTimeout(240_000)
+  test.setTimeout(240_000);
   try {
 
     await page.goto('https://countryclub.golfmanager.com/system/page/landing');
     await page.getByRole('link', { name: 'Reservar' }).click();
 
     const userField = await page.getByRole('textbox', { name: 'Usuario o email' });
-    await userField.fill(process.env.COUNTRY_CLUB_USERNAME)
+    await userField.fill(process.env.COUNTRY_CLUB_USERNAME);
     const passwordField = await page.getByRole('textbox', { name: 'Contraseña' });
-    await passwordField.fill(process.env.COUNTRY_CLUB_PASSWORD)
+    await passwordField.fill(process.env.COUNTRY_CLUB_PASSWORD);
     await page.locator('div').filter({ hasText: /^Entrar$/ }).nth(2).click();
     await page.getByText('Golf').click();
     await page.locator('.textIconInput > .icon').click();
     const dayOfTheMonth = new Date(Date.now() + 1000 * 3600 * 24).getDate();
-    const todayAt8 = (new Date()).setHours(8, 0, 0, 0)
+    const todayAt8 = (new Date()).setHours(8, 0, 0, 0);
     const timeout = todayAt8 - new Date();
 
     await page.waitForTimeout(timeout);
-    await page.getByText(dayOfTheMonth.toString(), { exact: true })
+    await page.getByText(dayOfTheMonth.toString(), { exact: true });
       .filter({ has: page.locator("xpath=ancestor::td[1]/preceding-sibling::td[1]//span[contains(@class,\"today\")]") }) // THIS FILTERS THE DAY OF THE MONTH TO THE ONE AFTER TODAY
-      .click()
+      .click();
 
     const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:40)/ }).first()
     const hourValue = hourLocator.innerText();
-    hourLocator.click()
+    hourLocator.click();
     const child = page.getByText("GF 18H");
     await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
@@ -50,7 +50,7 @@ test('test', async ({ page }) => {
     }
 
     await page.getByRole('checkbox').click();
-    await page.getByText('Pagar', { exact: true }).click()
+    await page.getByText('Pagar', { exact: true }).click();
 
 
     await page.locator('#tokenizedCards').click();
@@ -60,10 +60,10 @@ test('test', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Nombre en la tarjeta' }).fill("Victor M Justo K");
     await page.getByRole('textbox', { name: 'Correo electrónico' }).fill("v.justo@claro.net.do");
 
-    await page.pause()
+    await page.pause();
   } catch (e) {
     console.log(e)
-    await page.pause()
+    await page.pause();
     // Do something if this is a timeout.
   }
 
