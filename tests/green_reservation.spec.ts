@@ -15,12 +15,11 @@ test('test', async ({ page }) => {
     await page.locator('div').filter({ hasText: /^Entrar$/ }).nth(2).click();
     await page.getByText('Golf').click();
     await page.locator('.textIconInput > .icon').click();
-    const dayOfTheMonth = (new Date()).getDate() + 1;
+    const dayOfTheMonth = new Date(Date.now() + 1000 * 3600 * 24).getDate();
     const todayAt8 = (new Date()).setHours(8, 0, 0, 0)
     const timeout = todayAt8 - new Date();
 
     await page.waitForTimeout(timeout);
-    // await page.pause();
     await page.getByText(dayOfTheMonth.toString(), { exact: true })
       .filter({ has: page.locator("xpath=ancestor::td[1]/preceding-sibling::td[1]//span[contains(@class,\"today\")]") }) // THIS FILTERS THE DAY OF THE MONTH TO THE ONE AFTER TODAY
       .click()
