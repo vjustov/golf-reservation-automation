@@ -16,12 +16,14 @@ test('test', async ({ page }) => {
     await page.getByText('Golf').click();
     await page.locator('.textIconInput > .icon').click();
     const dayOfTheMonth = (new Date()).getDate() + 1;
-    const todayAt8 = (new Date()).setHours(8,0,0,0)
+    const todayAt8 = (new Date()).setHours(8, 0, 0, 0)
     const timeout = todayAt8 - new Date();
 
-    await page.waitForTimeout(timeout);    
+    await page.waitForTimeout(timeout);
     // await page.pause();
-    await page.getByText(dayOfTheMonth.toString(), { exact: true }).click();
+    await page.getByText(dayOfTheMonth.toString(), { exact: true })
+      .filter({ has: page.locator("xpath=ancestor::td[1]/preceding-sibling::td[1]//span[contains(@class,\"today\")]") }) // THIS FILTERS THE DAY OF THE MONTH TO THE ONE AFTER TODAY
+      .click()
 
     const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:40)/ }).first()
     const hourValue = hourLocator.innerText();
@@ -29,7 +31,8 @@ test('test', async ({ page }) => {
     const child = page.getByText("GF 18H");
     await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
-    const memberIds = [6645, 7818, 6563];
+    // const memberIds = [6645, 7818, 6563];
+    const memberIds = [6645, 5892, 6563];
     // const memberIds = [6944,6343,1668]; // 9:29
     // const memberIds = [4311,7377,4818]; // 9:34
     // const memberIds = [5162, 3176, 3537]; // 10:00
