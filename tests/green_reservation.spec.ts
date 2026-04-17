@@ -1,8 +1,12 @@
 import 'dotenv/config'
 import { test, expect } from '@playwright/test';
+import fs from 'fs';
 
-test('test', async ({ page }) => {
+test('test', async ({ page }, testInfo) => {
   test.setTimeout(240_000);
+  const consoleLogs: string[] = [];
+  page.on('console', msg => consoleLogs.push(`[${new Date().toISOString()}] [${msg.type()}] ${msg.text()}`));
+
   try {
 
     await page.goto('https://countryclub.golfmanager.com/system/page/landing');
@@ -31,7 +35,7 @@ test('test', async ({ page }) => {
     await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
     // const memberIds = [6645, 7818, 6563];
-    const memberIds = [6645, 5892, 6563];
+    const memberIds = [6944, 7818, 3537];
     // const memberIds = [6944,6343,1668]; // 9:29
     // const memberIds = [4311,7377,4818]; // 9:34
     // const memberIds = [5162, 3176, 3537]; // 10:00
@@ -45,7 +49,9 @@ test('test', async ({ page }) => {
 
     await page.getByText("Confirmar").click();
 
-    if (await page.locator(".confirmReservation > .errorPanel").innerText()) {
+    const errorPanel = page.locator(".confirmReservation > .errorPanel");
+    if (await errorPanel.isVisible()) {
+      const errorText = await errorPanel.innerText();
       // do something
     }
 
@@ -65,6 +71,15 @@ test('test', async ({ page }) => {
     console.log(e)
     await page.pause();
     // Do something if this is a timeout.
+  } finally {
+    const logPath = testInfo.outputPath('console.log');
+    fs.writeFileSync(logPath, consoleLogs.join('\n'));
+    console.log(`Console logs saved to: ${logPath}`);
+
+    const videoPath = await page.video()?.path();
+    if (videoPath) {
+      console.log(`Video saved to: ${videoPath}`);
+    }
   }
 
 });
