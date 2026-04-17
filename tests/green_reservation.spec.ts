@@ -31,6 +31,7 @@ test('test', async ({ page }, testInfo) => {
     const hourLocator = await page.locator(".hour").filter({ hasText: /(07:[45]0|08:[01]0|09:[345]0|10:40)/ }).first()
     const hourValue = hourLocator.innerText();
     hourLocator.click();
+    console.log(`Selected hour: ${hourValue}`);
     const child = page.getByText("GF 18H");
     await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
@@ -42,10 +43,9 @@ test('test', async ({ page }, testInfo) => {
 
 
 
-    const memberFields = page.getByRole('textbox', { name: 'Identificador' });
-    const count = await memberFields.count();
-    for (let i = 0; i < count; ++i)
-      await memberFields.nth(i).fill(memberIds[i].toString());
+    const memberFields = await page.getByRole('textbox', { name: 'Identificador' }).all();
+    for (let i = 0; i < memberFields.length; ++i)
+      await memberFields[i].fill(memberIds[i].toString());
 
     await page.getByText("Confirmar").click();
 
@@ -83,8 +83,3 @@ test('test', async ({ page }, testInfo) => {
   }
 
 });
-
-
-function selectHour() {
-
-}
