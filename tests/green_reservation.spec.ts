@@ -20,7 +20,7 @@ test('test', async ({ page }) => {
     const timeout = todayAt8 - new Date();
 
     await page.waitForTimeout(timeout);
-    await page.getByText(dayOfTheMonth.toString(), { exact: true });
+    await page.getByText(dayOfTheMonth.toString(), { exact: true })
       .filter({ has: page.locator("xpath=ancestor::td[1]/preceding-sibling::td[1]//span[contains(@class,\"today\")]") }) // THIS FILTERS THE DAY OF THE MONTH TO THE ONE AFTER TODAY
       .click();
 
