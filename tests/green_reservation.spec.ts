@@ -54,7 +54,9 @@ async function selectDate(page: Page) {
 
 async function bookFirstAvailableHour(page: Page) {
   await selectDate(page);
-  const hourLocators = await page.locator(".hour").filter({ hasText: HOUR_PATTERN }).all();
+  const hoursLocator = page.locator(".hour").filter({ hasText: HOUR_PATTERN });
+  await hoursLocator.first().waitFor({ state: 'visible' });
+  const hourLocators = await hoursLocator.all();
 
   for (let i = 0; i < hourLocators.length; i++) {
     if (i > 0) await selectDate(page);
@@ -72,7 +74,9 @@ async function attemptHour(page: Page, hourLocator: Locator): Promise<boolean> {
   const child = page.getByText("GF 18H");
   await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
 
-  const memberFields = await page.getByRole('textbox', { name: 'Identificador' }).all();
+  const memberFieldsLocator = page.getByRole('textbox', { name: 'Identificador' });
+  await memberFieldsLocator.first().waitFor({ state: 'visible' });
+  const memberFields = await memberFieldsLocator.all();
   for (let i = 0; i < memberFields.length; ++i)
     await memberFields[i].fill(MEMBER_IDS[i].toString());
 
