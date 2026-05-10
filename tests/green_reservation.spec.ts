@@ -4,6 +4,11 @@ import fs from 'fs';
 
 const HOUR_PATTERN = /(07:[45]0|08:[01]0|09:[345]0|10:40)/;
 const MEMBER_IDS = [6944, 7818, 3537];
+const MIN_PLAYERS = 1;
+const MAX_PLAYERS = 4;
+if (MEMBER_IDS.length < MIN_PLAYERS || MEMBER_IDS.length > MAX_PLAYERS) {
+  throw new Error(`MEMBER_IDS must contain ${MIN_PLAYERS}-${MAX_PLAYERS} ids, got ${MEMBER_IDS.length}`);
+}
 
 test('test', async ({ page }, testInfo) => {
   test.setTimeout(240_000);
@@ -70,7 +75,7 @@ async function attemptHour(page: Page, hourLocator: Locator): Promise<boolean> {
 
   const child = page.getByText("GF 18H");
   const playersCount = MEMBER_IDS.length.toString();
-  await page.locator('div.resourceContent').filter({ has: child }).getByText(playersCount).click();
+  await page.locator('div.resourceContent').filter({ has: child }).getByText(playersCount, { exact: true }).click();
 
   const memberFieldsLocator = page.getByRole('textbox', { name: 'Identificador' });
   await memberFieldsLocator.first().waitFor({ state: 'visible' });
