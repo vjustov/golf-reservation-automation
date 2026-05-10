@@ -46,10 +46,7 @@ async function waitUntil8am(page: Page) {
 
 async function selectDate(page: Page) {
   await page.locator('.textIconInput > .icon').click();
-  const tomorrow = new Date(Date.now() + 1000 * 3600 * 24).getDate();
-  await page.getByText(tomorrow.toString(), { exact: true })
-    .filter({ has: page.locator("xpath=ancestor::td[1]/preceding-sibling::td[1]//span[contains(@class,\"today\")]") }) // THIS FILTERS THE DAY OF THE MONTH TO THE ONE AFTER TODAY
-    .click();
+  await page.locator("xpath=//span[contains(@class,'today')]/ancestor::td[1]/following::td[1]").click();
 }
 
 async function bookFirstAvailableHour(page: Page) {
