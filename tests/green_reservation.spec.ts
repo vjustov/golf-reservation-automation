@@ -69,7 +69,8 @@ async function attemptHour(page: Page, hourLocator: Locator): Promise<boolean> {
   console.log(`Selected hour: ${hourValue}`);
 
   const child = page.getByText("GF 18H");
-  await page.locator('div.resourceContent').filter({ has: child }).getByText("3").click();
+  const playersCount = MEMBER_IDS.length.toString();
+  await page.locator('div.resourceContent').filter({ has: child }).getByText(playersCount).click();
 
   const memberFieldsLocator = page.getByRole('textbox', { name: 'Identificador' });
   await memberFieldsLocator.first().waitFor({ state: 'visible' });
